@@ -46,7 +46,7 @@ Google AI overview is very useful for this:
 
 6. Later, during the investigation, a flaw was discovered in their ACIS code rendering system. What were these flaws? (Format: XXX Xxxxxxxxx, Xxxxxxxx Xxxxxx Xxxxxx Xxxxxxxxx)
 
-There is also a pdf report which contains answer to this question specifically: https://oversight.house.gov/wp-content/uploads/2018/12/Equifax-Report.pdf
+There is also a pdf report I found which contains answer to this question specifically: https://oversight.house.gov/wp-content/uploads/2018/12/Equifax-Report.pdf
 
 <img width="2042" height="390" alt="image" src="https://github.com/user-attachments/assets/0349f11f-df40-492f-9194-7ec410b2acc7" />
 
@@ -65,4 +65,62 @@ This info is again in the report, under the anatomy:
 <img width="2179" height="666" alt="image" src="https://github.com/user-attachments/assets/02bfc2d5-eafd-4acb-8fd2-e785517e8f94" />
 
 9. Adversary Analysis, this one group in particular as being involved in numerous attacks, including an attack on a medical research company during COVID-19. What is the name of this threat group (according to MITRE), what threat vector do they use, what is their country of origin, and what is their motivation? (Format: XXXX, Xxxxxxxxxx, Xxxxxx, Xxxxxxxxx)
+
+This question was a bit misleading for me, but then I realised this probably doesn't corellate with the previous questions (as I didn't find a specific APT involved in Equifax breach). 
+
+As I started researching several groups stood out and I couldn't decide which one is meant in the question and went to the lab environment to check out if I missed something. In the readme several reports were mentioned but I thought these are only names serving as hints, because in the investigation folder on Desktop there were no such files. 
+Still, I searched the disk C and actually found these reports in zip files!
+
+<img width="898" height="162" alt="image" src="https://github.com/user-attachments/assets/f4019f69-b7e4-4d00-81b5-4400f8dc824f" />
+
+Only when I opened them I realised that all info could probably obtained from these 😅.
+
+I checked out the reports and APTs that there mentioned there and found this:
+
+<img width="1255" height="867" alt="image" src="https://github.com/user-attachments/assets/50be7816-bf86-4b42-a236-5f98be03eeb1" />
+
+It is the right answer - FIN7, ransomware, Russia, financial
+
+10.  Investigating the other threat group. What is the APT number assigned to this group? What is the name of the specific operation that involved dropping web shells on SharePoint servers? In what year was this group first observed, and what is their possible motivation? 
+
+This simply requires to check the other report (which I already read at that time):
+
+<img width="1465" height="574" alt="image" src="https://github.com/user-attachments/assets/099d90be-c065-4bf7-912d-b2484a56b3d2" />
+
+Answer is APT27, SharePoint Server Compromise, 2010, Espionage.
+
+11. Haunted Company Inc. in Tokyo is under cyber attack. Based on the IOCs that were provided (hint: BAT!), what attack vectors did the threat actor use? (Format: Sxxxxx Exxxxxxxxxx, Wxxxxxxx)
+
+I looked at the TokyoIOC folder:
+
+<img width="1041" height="77" alt="image" src="https://github.com/user-attachments/assets/dca856f7-ecd8-4053-b67f-f9371fd0f233" />
+
+But the files are password-protected and there is also an archive passwords.zip which hints we need to access it first.
+
+Initial investigation folder has a link to "haunted" website so I went there first:
+
+<img width="1713" height="755" alt="image" src="https://github.com/user-attachments/assets/b8ddc23f-0eb5-4741-b967-b3f99acdc90a" />
+
+There is a script section with full html encoded in b64:
+
+'''<script>        // Base64-encoded version of the full HTML code        const base64Content = `PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+VHJpY2sgb3IgVGhyZWF0OiBIYXVudGVkIEZlc3RpdmFsPC90aXRsZT4KICAgIDxzdHlsZT4KICAgICAgICBAZm9udC1mYWNlIHsKICAgICAgICAgICAgZm9udC1mYW1pbHk6ICdDcmVlcHN0ZXInOwogICAgICAgICAgICBzcmM6IHVybCgnZm9udHMvQ3JlZXBzdGVy'''
+
+Decoding and we get a hint at what file contains the pass to zip archive:
+
+<img width="613" height="185" alt="image" src="https://github.com/user-attachments/assets/f6a594be-de35-48cf-8a31-978df63f9ac3" />
+
+Check metadata (sorry i was too lasy to open exifttool):
+
+<img width="362" height="205" alt="image" src="https://github.com/user-attachments/assets/2796964d-aac7-4c50-b099-e7addf1cde3a" />
+
+After opening passwords.zip we get a pass: ''hauntedfestival666''
+
+I used it to open TokyoIOC folder, there are 2 docs - rtf and aspx.
+
+Based on these malicious files the answer is Social Engineering, Webshell since rtf contains script code that is executed after opening it and aspx file has ExternalURL value which contains injected server-side script.
+
+12. One of the IOCs contains shellcode. Use a tool and review the output to identify the offset of the PEB (Process Environment Block). (Hint: Output + OSINT!) (Format: 0x..)
+
+This requires us to use OfficeMalScanner.
+
 
