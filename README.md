@@ -123,4 +123,38 @@ Based on these malicious files the answer is Social Engineering, Webshell since 
 
 This requires us to use OfficeMalScanner.
 
+I decided to scan the rtf since its the most likely candidate for executable code:
+
+<img width="765" height="165" alt="image" src="https://github.com/user-attachments/assets/e9d2528e-f7e3-4f52-a916-08bff692dea0" />
+
+I then used rtfscan as suggested:
+
+<img width="1013" height="531" alt="image" src="https://github.com/user-attachments/assets/982bf746-6dcf-4eba-b4e2-681d845962dc" />
+
+I then used GPT on how to interpret the ouput and get the PEB offset:
+
+<img width="1290" height="432" alt="image" src="https://github.com/user-attachments/assets/9ea78cc9-3384-434d-8f55-9a84403eef7e" />
+
+The answer is 0xcc.
+
+13. Based on the intelligence gathered, which threat group was responsible for the cyberattack on Haunted Company Inc.? What is the name of the malware they used to compromise Tokyo's infrastructure? (Hint: OSINT!) (Format: Xxxxxx Xxxxx-XXXX, XxxxxXxxxxxx)
+
+Since we choose between 2 groups described in local/internal reports, I suspected that APT27 fits the profile much better, I then used the hash of the rtf file and queried virustotal, immediately found the connection:
+
+<img width="1271" height="100" alt="image" src="https://github.com/user-attachments/assets/27afd472-a033-4aa1-8c66-5c73aa5b30cf" />
+
+The report also mentiones this behaviour: '''ChinaChopper a web-based executable script is dropped via asystem token, involves identifying the Exchange server and attempting to install theOwaAuth web shell to the web directory to establish persistence.''' which is what we saw in the IOC files.
+
+Therefore the answer is Threat group-3390, ChinaChopper.
+
+15. Referring to the Asset-Threat Diagram which is an integral part of building intelligence, It appears the attacker exploited a vulnerability in Tokyo's infrastructure. What is the latest CVE for the version the threat actor targeted, and what type of attack was it? (Format: CVE-XXXX-XXXXX, XXX)
+
+This diagram is found in the same zip as the reports. As we found earlier, attackers used a webshell, and lookign at the diagram Apache Struts seems to be the perfect candidate, so I googled:
+
+<img width="1189" height="670" alt="image" src="https://github.com/user-attachments/assets/4041ce21-09a1-4a52-961b-bf1488c95447" />
+
+Seems like recently there was another rce CVE discovered :), but we are interested in the year 2023, which is the answer: CVE-2017-5638, RCE.
+
+In conclusion, I would say it is an interesting room on Threat Intel and OSINT, a bit misleading in the sense that folders are locatedon the disk and we're not given exact paths and need to figure this out ourselves. 
+
 
